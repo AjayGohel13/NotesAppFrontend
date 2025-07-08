@@ -47,28 +47,43 @@ const SignUpForm: React.FC = () => {
         }
     };
 
-    const handleSignUp = async () => {
-        setLoading(true)
-        const result = otpSchema.safeParse({ verifyOtp });
-        if (!result.success) {
-            const errorMessage = result.error.errors[0]?.message;
-            toast.error(errorMessage);
-            return;
-        }
-        if (otp === verifyOtp) {
+const handleSignUp = async () => {
+    setLoading(true);
+    const result = otpSchema.safeParse({ verifyOtp });
+
+    if (!result.success) {
+        const errorMessage = result.error.errors[0]?.message;
+        toast.error(errorMessage);
+        setLoading(false);
+        return;
+    }
+
+    if (otp === verifyOtp) {
+        try {
             const response = await axios.post(`${backendUrl}/auth/sign-up`, {
                 name,
                 email,
                 date,
             });
+
             toast.success('Sign-Up successfully');
             navigate('/login');
-            localStorage.setItem("user", response.data.user)
-            setLoading(false)
-        } else {
-            toast.error("Please enter valid OTP")
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+        } catch (error:any) {
+            if (error.response && error.response.status === 401) {
+                toast.error(error.response.data.message || 'Email already exists! Sign-in instead');
+            } else {
+                toast.error("Something went wrong. Please try again.");
+            }
+        } finally {
+            setLoading(false);
         }
+    } else {
+        toast.error("Please enter valid OTP");
+        setLoading(false);
     }
+};
+
     return (
         <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
             <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
