@@ -19,23 +19,30 @@ const Login = () => {
     const [verifyOtp, setVerifyOtp] = useState('');
     const handleGetOtp = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
+
             const result = emailSchema.safeParse({ email });
             if (!result.success) {
-                const errorMessage = result.error.errors[0]?.message;
-                toast.error(errorMessage);
+                toast.error(result.error.errors[0]?.message);
                 return;
             }
-            const response = await axios.post(`${backendUrl}/auth/getOtp`, {
-                email,
-            });
 
-            setOtp(response.data.otp)
-            setLoading(false)
-        } catch (error) {
-            toast.error('Failed to send OTP. Please try again.');
+            const userCheck = await axios.post(`${backendUrl}/auth/check-user`, { email });
+
+            if (userCheck.status === 200) {
+                const response = await axios.post(`${backendUrl}/auth/getOtp`, { email });
+                setOtp(response.data.otp);
+            } else {
+                toast.error('User does not exist! Please sign up.');
+            }
+
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to verify user');
+        } finally {
+            setLoading(false);
         }
     };
+
 
     const handleSignIn = async () => {
         setLoading(true)
@@ -56,6 +63,9 @@ const Login = () => {
             } else {
                 toast.error("Please enter valid OTP")
             }
+        }
+        if (response.status === 404) {
+            toast.error(response.data.message);
         }
         setLoading(false)
     }
