@@ -3,8 +3,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-const backendUrl = import.meta.env.VITE_BACKEND_URL; 
+import { Link, useNavigate } from 'react-router-dom';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const signUpSchema = z.object({
     email: z.string().email('Invalid email address'),
@@ -74,7 +74,7 @@ const SignUpForm: React.FC = () => {
             <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
                 <div>
                     <img src="/top.png"
-                        className="w-60 mx-auto" />
+                        className="w-96 mx-auto" />
                 </div>
                 <div className="mt-12 flex flex-col items-center">
                     <h1 className="text-2xl xl:text-3xl font-extrabold">
@@ -89,32 +89,50 @@ const SignUpForm: React.FC = () => {
                         </div>
 
                         <div className="mx-auto">
-                            <input
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-8 py-4 rounded-lg font-medium bg-white border border-black placeholder-black text-sm focus:outline-none focus:border-blue-500 focus:bg-white"
-                                type="email" placeholder="Email" />
-                            <input
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className=" mt-5 w-full px-8 py-4 rounded-lg font-medium bg-white border border-black placeholder-black text-sm focus:outline-none focus:border-blue-500 focus:bg-white"
-                                type="name" placeholder="Name" />
-                            <input
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                className=" mt-5 w-full px-8 py-4 rounded-lg font-medium bg-white border border-black placeholder-black text-sm focus:outline-none focus:border-blue-500 focus:bg-white"
-                                type="date" />
-
-                            {otp !== "" && (
-
+                            <div className=' flex flex-col items-start'>
+                                <label htmlFor="email" className="mb-2 text-start text-lg">Email</label>
                                 <input
-                                    value={verifyOtp}
-                                    onChange={(e) => setVerifyOtp(e.target.value)}
-                                    // disabled={otp === ""}
-                                    className=" mt-5 w-full px-8 py-4 rounded-lg font-medium bg-white border border-black placeholder-black text-sm focus:outline-none focus:border-blue-500 focus:bg-white"
-                                    type="text"
-                                    placeholder='Enter OTP'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="border p-3 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                                    type="email"
+                                    placeholder="Email"
+                                    required
                                 />
+                            </div>
+                            <div className=' flex flex-col items-start'>
+                                <label htmlFor="name" className="mb-2 text-start text-lg">Name</label>
+                                <input
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="border p-3 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                                    type="text"
+                                    placeholder='Name'
+                                    required
+                                />
+                            </div>
+                            <div className=' flex flex-col items-start'>
+                                <label htmlFor="date" className="mb-2 text-start text-lg">Birth Date</label>
+                                <input
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    className="border p-3 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                                    type="date"
+                                    placeholder='Birth date'
+                                    required
+                                />
+                            </div>
+                            {otp !== "" && (
+                                <div className=' flex flex-col items-start'>
+                                    <label htmlFor="OTP" className="mb-2 text-start text-lg">Enter OTP</label>
+                                    <input
+                                        value={verifyOtp}
+                                        onChange={(e) => setVerifyOtp(e.target.value)}
+                                        className="border p-3 dark:border-gray-700 shadow-md placeholder:text-base focus:scale-105 ease-in-out duration-300 border-gray-300 rounded-lg w-full"
+                                        type="text"
+                                        placeholder='Enter OTP'
+                                    />
+                                </div>
                             )}
                             {otp === "" && (
                                 <button
@@ -132,6 +150,22 @@ const SignUpForm: React.FC = () => {
                                     Sign-Up
                                 </button>
                             )}
+
+                            <div className="flex flex-col mt-4 items-center justify-center text-base">
+                                <h3 className="text-gray-700">
+                                    Already have an account?{" "}
+                                    <Link
+                                        className="group text-blue-400 transition-all duration-100 ease-in-out"
+                                        to="/sign-in"
+                                    >
+                                        <span
+                                            className="bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out"
+                                        >
+                                            Sign In
+                                        </span>
+                                    </Link>
+                                </h3>
+                            </div>
 
                         </div>
                     </div>
